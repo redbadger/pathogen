@@ -1,0 +1,8 @@
+[workspace]
+members = ["key_path", "key_path_macros"]
+resolver = "2"
+
+[workspace.package]
+authors = ["Red Badger Consultin Limited"]
+edition = "2021"
+rust-version = "1.66.0"

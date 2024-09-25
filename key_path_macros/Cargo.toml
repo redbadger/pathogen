@@ -1,0 +1,18 @@
+[package]
+name = "key_path_macros"
+version = "0.1.0"
+edition.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+darling = "0.20.8"
+proc-macro-error = "1.0.4"
+proc-macro2 = "1.0.78"
+quote = "1.0.35"
+syn = "2.0.51"
+
+[dev-dependencies]
+insta = "1.35.1"
+prettyplease = "0.2.16"

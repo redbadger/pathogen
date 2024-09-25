@@ -1,0 +1,15 @@
+[package]
+name = "key_path"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+chrono = { version = "0.4.35", features = ["serde"] }
+key_path_macros = { path = "../key_path_macros" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1"
+uuid = { version = "1.4", features = ["serde"] }
+
+[dev-dependencies]
+pretty_assertions = "1.4.0"
