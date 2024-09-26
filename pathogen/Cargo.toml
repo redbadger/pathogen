@@ -2,10 +2,13 @@
 name = "pathogen"
 version = "0.1.0"
 edition.workspace = true
+description = "Typed references and deep mutation into Rust types"
+license = "MIT"
+repository.workspace = true
 
 [dependencies]
 chrono = { version = "0.4.35", features = ["serde"] }
-pathogen_macros = { path = "../pathogen_macros" }
+pathogen_macros = "0.1.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "1"
