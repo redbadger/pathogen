@@ -27,21 +27,21 @@ fn struct_with_one_field() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::Navigable for MyStruct {
+    impl pathogen::Navigable for MyStruct {
         type Reflection<Root> = MyStructKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyStructKeyPathReflection {
-                a: path.appending(&key_path::KeyPath::field("a")),
+                a: path.appending(&pathogen::KeyPath::field("a")),
             }
         }
     }
     pub struct MyStructKeyPathReflection<Root> {
-        pub a: key_path::KeyPath<Root, usize>,
+        pub a: pathogen::KeyPath<Root, usize>,
     }
     "###);
 }
@@ -63,25 +63,25 @@ fn struct_with_multiple_fields() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::Navigable for MyStruct {
+    impl pathogen::Navigable for MyStruct {
         type Reflection<Root> = MyStructKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyStructKeyPathReflection {
-                my_string: path.appending(&key_path::KeyPath::field("my_string")),
-                my_vector: path.appending(&key_path::KeyPath::field("my_vector")),
-                my_structs: path.appending(&key_path::KeyPath::field("my_structs")),
+                my_string: path.appending(&pathogen::KeyPath::field("my_string")),
+                my_vector: path.appending(&pathogen::KeyPath::field("my_vector")),
+                my_structs: path.appending(&pathogen::KeyPath::field("my_structs")),
             }
         }
     }
     pub struct MyStructKeyPathReflection<Root> {
-        pub my_string: key_path::KeyPath<Root, String>,
-        pub my_vector: key_path::KeyPath<Root, Vec<usize>>,
-        pub my_structs: key_path::KeyPath<Root, Vec<Nested>>,
+        pub my_string: pathogen::KeyPath<Root, String>,
+        pub my_vector: pathogen::KeyPath<Root, Vec<usize>>,
+        pub my_structs: pathogen::KeyPath<Root, Vec<Nested>>,
     }
     "###);
 }
@@ -103,51 +103,51 @@ fn enum_with_struct_variants() {
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
     pub struct MyEnumKeyPathReflectionVariantFirstOne<Root> {
-        pub a: key_path::KeyPath<Root, usize>,
+        pub a: pathogen::KeyPath<Root, usize>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantFirstOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantFirstOne {
-                a: path.appending(&key_path::KeyPath::field("a")),
+                a: path.appending(&pathogen::KeyPath::field("a")),
             }
         }
     }
     pub struct MyEnumKeyPathReflectionVariantSecondOne<Root> {
-        pub b: key_path::KeyPath<Root, String>,
-        pub c: key_path::KeyPath<Root, f64>,
+        pub b: pathogen::KeyPath<Root, String>,
+        pub c: pathogen::KeyPath<Root, f64>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantSecondOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantSecondOne {
-                b: path.appending(&key_path::KeyPath::field("b")),
-                c: path.appending(&key_path::KeyPath::field("c")),
+                b: path.appending(&pathogen::KeyPath::field("b")),
+                c: path.appending(&pathogen::KeyPath::field("c")),
             }
         }
     }
     #[allow(non_snake_case)]
     pub struct MyEnumKeyPathReflection<Root> {
-        pub FirstOne: key_path::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
-        pub SecondOne: key_path::KeyPath<
+        pub FirstOne: pathogen::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
+        pub SecondOne: pathogen::KeyPath<
             Root,
             MyEnumKeyPathReflectionVariantSecondOne<Root>,
         >,
     }
-    impl key_path::Navigable for MyEnum {
+    impl pathogen::Navigable for MyEnum {
         type Reflection<Root> = MyEnumKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
@@ -155,16 +155,16 @@ fn enum_with_struct_variants() {
             MyEnumKeyPathReflection {
                 FirstOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "FirstOne",
-                            key_path::VariantTagType::External,
+                            pathogen::VariantTagType::External,
                         ),
                     ),
                 SecondOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "SecondOne",
-                            key_path::VariantTagType::External,
+                            pathogen::VariantTagType::External,
                         ),
                     ),
             }
@@ -191,13 +191,13 @@ fn enum_with_tuple_variants() {
     insta::assert_snapshot!(pretty_print(&actual), @r###"
     #[allow(non_snake_case)]
     pub struct TestTupleEnumKeyPathReflection<Root> {
-        pub VariantOne: (key_path::KeyPath<Root, usize>,),
-        pub VariantTwo: (key_path::KeyPath<Root, Nested>, key_path::KeyPath<Root, String>),
+        pub VariantOne: (pathogen::KeyPath<Root, usize>,),
+        pub VariantTwo: (pathogen::KeyPath<Root, Nested>, pathogen::KeyPath<Root, String>),
     }
-    impl key_path::Navigable for TestTupleEnum {
+    impl pathogen::Navigable for TestTupleEnum {
         type Reflection<Root> = TestTupleEnumKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
@@ -206,28 +206,28 @@ fn enum_with_tuple_variants() {
                 VariantOne: (
                     path
                         .appending(
-                            &key_path::KeyPath::tuple_variant(
+                            &pathogen::KeyPath::tuple_variant(
                                 "VariantOne",
                                 "0",
-                                key_path::VariantTagType::External,
+                                pathogen::VariantTagType::External,
                             ),
                         ),
                 ),
                 VariantTwo: (
                     path
                         .appending(
-                            &key_path::KeyPath::tuple_variant(
+                            &pathogen::KeyPath::tuple_variant(
                                 "VariantTwo",
                                 "0",
-                                key_path::VariantTagType::External,
+                                pathogen::VariantTagType::External,
                             ),
                         ),
                     path
                         .appending(
-                            &key_path::KeyPath::tuple_variant(
+                            &pathogen::KeyPath::tuple_variant(
                                 "VariantTwo",
                                 "1",
-                                key_path::VariantTagType::External,
+                                pathogen::VariantTagType::External,
                             ),
                         ),
                 ),
@@ -253,21 +253,21 @@ fn struct_with_serde_rename() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::Navigable for MyStruct {
+    impl pathogen::Navigable for MyStruct {
         type Reflection<Root> = MyStructKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyStructKeyPathReflection {
-                my_string: path.appending(&key_path::KeyPath::field("bob")),
+                my_string: path.appending(&pathogen::KeyPath::field("bob")),
             }
         }
     }
     pub struct MyStructKeyPathReflection<Root> {
-        pub my_string: key_path::KeyPath<Root, String>,
+        pub my_string: pathogen::KeyPath<Root, String>,
     }
     "###);
 }
@@ -288,21 +288,21 @@ fn struct_with_serde_rename_and_default() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::Navigable for MyStruct {
+    impl pathogen::Navigable for MyStruct {
         type Reflection<Root> = MyStructKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyStructKeyPathReflection {
-                my_string: path.appending(&key_path::KeyPath::field("bob")),
+                my_string: path.appending(&pathogen::KeyPath::field("bob")),
             }
         }
     }
     pub struct MyStructKeyPathReflection<Root> {
-        pub my_string: key_path::KeyPath<Root, String>,
+        pub my_string: pathogen::KeyPath<Root, String>,
     }
     "###);
 }
@@ -326,51 +326,51 @@ fn enum_with_serde_rename() {
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
     pub struct MyEnumKeyPathReflectionVariantFirstOne<Root> {
-        pub a: key_path::KeyPath<Root, usize>,
+        pub a: pathogen::KeyPath<Root, usize>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantFirstOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantFirstOne {
-                a: path.appending(&key_path::KeyPath::field("a")),
+                a: path.appending(&pathogen::KeyPath::field("a")),
             }
         }
     }
     pub struct MyEnumKeyPathReflectionVariantSecondOne<Root> {
-        pub b: key_path::KeyPath<Root, String>,
-        pub c: key_path::KeyPath<Root, f64>,
+        pub b: pathogen::KeyPath<Root, String>,
+        pub c: pathogen::KeyPath<Root, f64>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantSecondOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantSecondOne {
-                b: path.appending(&key_path::KeyPath::field("b")),
-                c: path.appending(&key_path::KeyPath::field("c")),
+                b: path.appending(&pathogen::KeyPath::field("b")),
+                c: path.appending(&pathogen::KeyPath::field("c")),
             }
         }
     }
     #[allow(non_snake_case)]
     pub struct MyEnumKeyPathReflection<Root> {
-        pub FirstOne: key_path::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
-        pub SecondOne: key_path::KeyPath<
+        pub FirstOne: pathogen::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
+        pub SecondOne: pathogen::KeyPath<
             Root,
             MyEnumKeyPathReflectionVariantSecondOne<Root>,
         >,
     }
-    impl key_path::Navigable for MyEnum {
+    impl pathogen::Navigable for MyEnum {
         type Reflection<Root> = MyEnumKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
@@ -378,16 +378,16 @@ fn enum_with_serde_rename() {
             MyEnumKeyPathReflection {
                 FirstOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "first",
-                            key_path::VariantTagType::External,
+                            pathogen::VariantTagType::External,
                         ),
                     ),
                 SecondOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "second",
-                            key_path::VariantTagType::External,
+                            pathogen::VariantTagType::External,
                         ),
                     ),
             }
@@ -411,21 +411,21 @@ fn struct_with_serde_rename_all() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::Navigable for MyStruct {
+    impl pathogen::Navigable for MyStruct {
         type Reflection<Root> = MyStructKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyStructKeyPathReflection {
-                my_string: path.appending(&key_path::KeyPath::field("myString")),
+                my_string: path.appending(&pathogen::KeyPath::field("myString")),
             }
         }
     }
     pub struct MyStructKeyPathReflection<Root> {
-        pub my_string: key_path::KeyPath<Root, String>,
+        pub my_string: pathogen::KeyPath<Root, String>,
     }
     "###);
 }
@@ -448,51 +448,51 @@ fn enum_with_serde_rename_all() {
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
     pub struct MyEnumKeyPathReflectionVariantFirstOne<Root> {
-        pub a: key_path::KeyPath<Root, usize>,
+        pub a: pathogen::KeyPath<Root, usize>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantFirstOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantFirstOne {
-                a: path.appending(&key_path::KeyPath::field("a")),
+                a: path.appending(&pathogen::KeyPath::field("a")),
             }
         }
     }
     pub struct MyEnumKeyPathReflectionVariantSecondOne<Root> {
-        pub b: key_path::KeyPath<Root, String>,
-        pub c: key_path::KeyPath<Root, f64>,
+        pub b: pathogen::KeyPath<Root, String>,
+        pub c: pathogen::KeyPath<Root, f64>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantSecondOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantSecondOne {
-                b: path.appending(&key_path::KeyPath::field("b")),
-                c: path.appending(&key_path::KeyPath::field("c")),
+                b: path.appending(&pathogen::KeyPath::field("b")),
+                c: path.appending(&pathogen::KeyPath::field("c")),
             }
         }
     }
     #[allow(non_snake_case)]
     pub struct MyEnumKeyPathReflection<Root> {
-        pub FirstOne: key_path::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
-        pub SecondOne: key_path::KeyPath<
+        pub FirstOne: pathogen::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
+        pub SecondOne: pathogen::KeyPath<
             Root,
             MyEnumKeyPathReflectionVariantSecondOne<Root>,
         >,
     }
-    impl key_path::Navigable for MyEnum {
+    impl pathogen::Navigable for MyEnum {
         type Reflection<Root> = MyEnumKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
@@ -500,16 +500,16 @@ fn enum_with_serde_rename_all() {
             MyEnumKeyPathReflection {
                 FirstOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "firstOne",
-                            key_path::VariantTagType::External,
+                            pathogen::VariantTagType::External,
                         ),
                     ),
                 SecondOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "secondOne",
-                            key_path::VariantTagType::External,
+                            pathogen::VariantTagType::External,
                         ),
                     ),
             }
@@ -535,51 +535,51 @@ fn externally_tagged_enum() {
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
     pub struct MyEnumKeyPathReflectionVariantFirstOne<Root> {
-        pub a: key_path::KeyPath<Root, usize>,
+        pub a: pathogen::KeyPath<Root, usize>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantFirstOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantFirstOne {
-                a: path.appending(&key_path::KeyPath::field("a")),
+                a: path.appending(&pathogen::KeyPath::field("a")),
             }
         }
     }
     pub struct MyEnumKeyPathReflectionVariantSecondOne<Root> {
-        pub b: key_path::KeyPath<Root, String>,
-        pub c: key_path::KeyPath<Root, f64>,
+        pub b: pathogen::KeyPath<Root, String>,
+        pub c: pathogen::KeyPath<Root, f64>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantSecondOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantSecondOne {
-                b: path.appending(&key_path::KeyPath::field("b")),
-                c: path.appending(&key_path::KeyPath::field("c")),
+                b: path.appending(&pathogen::KeyPath::field("b")),
+                c: path.appending(&pathogen::KeyPath::field("c")),
             }
         }
     }
     #[allow(non_snake_case)]
     pub struct MyEnumKeyPathReflection<Root> {
-        pub FirstOne: key_path::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
-        pub SecondOne: key_path::KeyPath<
+        pub FirstOne: pathogen::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
+        pub SecondOne: pathogen::KeyPath<
             Root,
             MyEnumKeyPathReflectionVariantSecondOne<Root>,
         >,
     }
-    impl key_path::Navigable for MyEnum {
+    impl pathogen::Navigable for MyEnum {
         type Reflection<Root> = MyEnumKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
@@ -587,16 +587,16 @@ fn externally_tagged_enum() {
             MyEnumKeyPathReflection {
                 FirstOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "FirstOne",
-                            key_path::VariantTagType::External,
+                            pathogen::VariantTagType::External,
                         ),
                     ),
                 SecondOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "SecondOne",
-                            key_path::VariantTagType::External,
+                            pathogen::VariantTagType::External,
                         ),
                     ),
             }
@@ -623,51 +623,51 @@ fn internally_tagged_enum() {
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
     pub struct MyEnumKeyPathReflectionVariantFirstOne<Root> {
-        pub a: key_path::KeyPath<Root, usize>,
+        pub a: pathogen::KeyPath<Root, usize>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantFirstOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantFirstOne {
-                a: path.appending(&key_path::KeyPath::field("a")),
+                a: path.appending(&pathogen::KeyPath::field("a")),
             }
         }
     }
     pub struct MyEnumKeyPathReflectionVariantSecondOne<Root> {
-        pub b: key_path::KeyPath<Root, String>,
-        pub c: key_path::KeyPath<Root, f64>,
+        pub b: pathogen::KeyPath<Root, String>,
+        pub c: pathogen::KeyPath<Root, f64>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantSecondOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantSecondOne {
-                b: path.appending(&key_path::KeyPath::field("b")),
-                c: path.appending(&key_path::KeyPath::field("c")),
+                b: path.appending(&pathogen::KeyPath::field("b")),
+                c: path.appending(&pathogen::KeyPath::field("c")),
             }
         }
     }
     #[allow(non_snake_case)]
     pub struct MyEnumKeyPathReflection<Root> {
-        pub FirstOne: key_path::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
-        pub SecondOne: key_path::KeyPath<
+        pub FirstOne: pathogen::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
+        pub SecondOne: pathogen::KeyPath<
             Root,
             MyEnumKeyPathReflectionVariantSecondOne<Root>,
         >,
     }
-    impl key_path::Navigable for MyEnum {
+    impl pathogen::Navigable for MyEnum {
         type Reflection<Root> = MyEnumKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
@@ -675,16 +675,16 @@ fn internally_tagged_enum() {
             MyEnumKeyPathReflection {
                 FirstOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "FirstOne",
-                            key_path::VariantTagType::Internal,
+                            pathogen::VariantTagType::Internal,
                         ),
                     ),
                 SecondOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "SecondOne",
-                            key_path::VariantTagType::Internal,
+                            pathogen::VariantTagType::Internal,
                         ),
                     ),
             }
@@ -711,51 +711,51 @@ fn adjacently_tagged_enum() {
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
     pub struct MyEnumKeyPathReflectionVariantFirstOne<Root> {
-        pub a: key_path::KeyPath<Root, usize>,
+        pub a: pathogen::KeyPath<Root, usize>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantFirstOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantFirstOne {
-                a: path.appending(&key_path::KeyPath::field("a")),
+                a: path.appending(&pathogen::KeyPath::field("a")),
             }
         }
     }
     pub struct MyEnumKeyPathReflectionVariantSecondOne<Root> {
-        pub b: key_path::KeyPath<Root, String>,
-        pub c: key_path::KeyPath<Root, f64>,
+        pub b: pathogen::KeyPath<Root, String>,
+        pub c: pathogen::KeyPath<Root, f64>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantSecondOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantSecondOne {
-                b: path.appending(&key_path::KeyPath::field("b")),
-                c: path.appending(&key_path::KeyPath::field("c")),
+                b: path.appending(&pathogen::KeyPath::field("b")),
+                c: path.appending(&pathogen::KeyPath::field("c")),
             }
         }
     }
     #[allow(non_snake_case)]
     pub struct MyEnumKeyPathReflection<Root> {
-        pub FirstOne: key_path::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
-        pub SecondOne: key_path::KeyPath<
+        pub FirstOne: pathogen::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
+        pub SecondOne: pathogen::KeyPath<
             Root,
             MyEnumKeyPathReflectionVariantSecondOne<Root>,
         >,
     }
-    impl key_path::Navigable for MyEnum {
+    impl pathogen::Navigable for MyEnum {
         type Reflection<Root> = MyEnumKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
@@ -763,16 +763,16 @@ fn adjacently_tagged_enum() {
             MyEnumKeyPathReflection {
                 FirstOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "FirstOne",
-                            key_path::VariantTagType::Adjacent,
+                            pathogen::VariantTagType::Adjacent,
                         ),
                     ),
                 SecondOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "SecondOne",
-                            key_path::VariantTagType::Adjacent,
+                            pathogen::VariantTagType::Adjacent,
                         ),
                     ),
             }
@@ -799,51 +799,51 @@ fn untagged_enum() {
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
     pub struct MyEnumKeyPathReflectionVariantFirstOne<Root> {
-        pub a: key_path::KeyPath<Root, usize>,
+        pub a: pathogen::KeyPath<Root, usize>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantFirstOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantFirstOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantFirstOne {
-                a: path.appending(&key_path::KeyPath::field("a")),
+                a: path.appending(&pathogen::KeyPath::field("a")),
             }
         }
     }
     pub struct MyEnumKeyPathReflectionVariantSecondOne<Root> {
-        pub b: key_path::KeyPath<Root, String>,
-        pub c: key_path::KeyPath<Root, f64>,
+        pub b: pathogen::KeyPath<Root, String>,
+        pub c: pathogen::KeyPath<Root, f64>,
     }
-    impl<T> key_path::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
+    impl<T> pathogen::Navigable for MyEnumKeyPathReflectionVariantSecondOne<T> {
         type Reflection<Root> = MyEnumKeyPathReflectionVariantSecondOne<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
         {
             MyEnumKeyPathReflectionVariantSecondOne {
-                b: path.appending(&key_path::KeyPath::field("b")),
-                c: path.appending(&key_path::KeyPath::field("c")),
+                b: path.appending(&pathogen::KeyPath::field("b")),
+                c: path.appending(&pathogen::KeyPath::field("c")),
             }
         }
     }
     #[allow(non_snake_case)]
     pub struct MyEnumKeyPathReflection<Root> {
-        pub FirstOne: key_path::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
-        pub SecondOne: key_path::KeyPath<
+        pub FirstOne: pathogen::KeyPath<Root, MyEnumKeyPathReflectionVariantFirstOne<Root>>,
+        pub SecondOne: pathogen::KeyPath<
             Root,
             MyEnumKeyPathReflectionVariantSecondOne<Root>,
         >,
     }
-    impl key_path::Navigable for MyEnum {
+    impl pathogen::Navigable for MyEnum {
         type Reflection<Root> = MyEnumKeyPathReflection<Root>;
         fn append_to_keypath<Root>(
-            path: &key_path::KeyPath<Root, Self>,
+            path: &pathogen::KeyPath<Root, Self>,
         ) -> Self::Reflection<Root>
         where
             Root: Sized,
@@ -851,16 +851,16 @@ fn untagged_enum() {
             MyEnumKeyPathReflection {
                 FirstOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "FirstOne",
-                            key_path::VariantTagType::Untagged,
+                            pathogen::VariantTagType::Untagged,
                         ),
                     ),
                 SecondOne: path
                     .appending(
-                        &key_path::KeyPath::variant(
+                        &pathogen::KeyPath::variant(
                             "SecondOne",
-                            key_path::VariantTagType::Untagged,
+                            pathogen::VariantTagType::Untagged,
                         ),
                     ),
             }

@@ -29,7 +29,7 @@ fn crate_name() -> proc_macro2::TokenStream {
     if in_self {
         quote! { crate }
     } else {
-        quote! { key_path }
+        quote! { pathogen }
     }
 }
 

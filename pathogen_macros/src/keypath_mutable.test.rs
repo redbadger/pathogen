@@ -27,31 +27,31 @@ fn struct_with_one_field() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyStruct {
+    impl pathogen::KeyPathMutable for MyStruct {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyStruct>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyStruct>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyStruct>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyStruct>())
                 };
             }
-            let key_path::KeyPathElement::Field { key } = keys[0] else {
+            let pathogen::KeyPathElement::Field { key } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
+                    pathogen::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
                 );
             };
             match key {
                 "a" => self.a.patch_keypath(&keys[1..], patch),
-                _ => Err(key_path::KeyPathError::unknown_field::<MyStruct>(key)),
+                _ => Err(pathogen::KeyPathError::unknown_field::<MyStruct>(key)),
             }
         }
     }
@@ -74,29 +74,29 @@ fn struct_with_one_skipped_field() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyStruct {
+    impl pathogen::KeyPathMutable for MyStruct {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyStruct>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyStruct>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyStruct>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyStruct>())
                 };
             }
-            let key_path::KeyPathElement::Field { key } = keys[0] else {
+            let pathogen::KeyPathElement::Field { key } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
+                    pathogen::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
                 );
             };
-            Err(key_path::KeyPathError::unknown_field::<MyStruct>(key))
+            Err(pathogen::KeyPathError::unknown_field::<MyStruct>(key))
         }
     }
     "###);
@@ -118,29 +118,29 @@ fn struct_with_skip_all() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyStruct {
+    impl pathogen::KeyPathMutable for MyStruct {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyStruct>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyStruct>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyStruct>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyStruct>())
                 };
             }
-            let key_path::KeyPathElement::Field { key } = keys[0] else {
+            let pathogen::KeyPathElement::Field { key } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
+                    pathogen::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
                 );
             };
-            Err(key_path::KeyPathError::unknown_field::<MyStruct>(key))
+            Err(pathogen::KeyPathError::unknown_field::<MyStruct>(key))
         }
     }
     "###);
@@ -158,31 +158,31 @@ fn newtype_struct() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyNumber {
+    impl pathogen::KeyPathMutable for MyNumber {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyNumber>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyNumber>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyNumber>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyNumber>())
                 };
             }
-            let key_path::KeyPathElement::Field { key } = keys[0] else {
+            let pathogen::KeyPathElement::Field { key } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_struct_with_field::<MyNumber>(),
+                    pathogen::KeyPathError::must_mutate_struct_with_field::<MyNumber>(),
                 );
             };
             match key {
                 "0" => self.0.patch_keypath(&keys[1..], patch),
-                _ => Err(key_path::KeyPathError::unknown_field::<MyNumber>(key)),
+                _ => Err(pathogen::KeyPathError::unknown_field::<MyNumber>(key)),
             }
         }
     }
@@ -206,33 +206,33 @@ fn struct_with_multiple_fields() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyStruct {
+    impl pathogen::KeyPathMutable for MyStruct {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyStruct>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyStruct>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyStruct>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyStruct>())
                 };
             }
-            let key_path::KeyPathElement::Field { key } = keys[0] else {
+            let pathogen::KeyPathElement::Field { key } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
+                    pathogen::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
                 );
             };
             match key {
                 "a" => self.a.patch_keypath(&keys[1..], patch),
                 "b" => self.b.patch_keypath(&keys[1..], patch),
                 "c" => self.c.patch_keypath(&keys[1..], patch),
-                _ => Err(key_path::KeyPathError::unknown_field::<MyStruct>(key)),
+                _ => Err(pathogen::KeyPathError::unknown_field::<MyStruct>(key)),
             }
         }
     }
@@ -257,33 +257,33 @@ fn struct_with_multiple_fields_and_rename() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyStruct {
+    impl pathogen::KeyPathMutable for MyStruct {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyStruct>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyStruct>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyStruct>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyStruct>())
                 };
             }
-            let key_path::KeyPathElement::Field { key } = keys[0] else {
+            let pathogen::KeyPathElement::Field { key } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
+                    pathogen::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
                 );
             };
             match key {
                 "longField" => self.long_field.patch_keypath(&keys[1..], patch),
                 "evenLongerField" => self.even_longer_field.patch_keypath(&keys[1..], patch),
                 "andOneMore" => self.and_one_more.patch_keypath(&keys[1..], patch),
-                _ => Err(key_path::KeyPathError::unknown_field::<MyStruct>(key)),
+                _ => Err(pathogen::KeyPathError::unknown_field::<MyStruct>(key)),
             }
         }
     }
@@ -306,31 +306,31 @@ fn enum_with_no_data() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for BasicEnum {
+    impl pathogen::KeyPathMutable for BasicEnum {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<BasicEnum>,
+                            pathogen::KeyPathError::from_deserialization_error::<BasicEnum>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<BasicEnum>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<BasicEnum>())
                 };
             }
-            let key_path::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
+            let pathogen::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_with_variant::<BasicEnum>(),
+                    pathogen::KeyPathError::must_mutate_enum_with_variant::<BasicEnum>(),
                 );
             };
-            let key_path::KeyPathElement::Field { key: field_name } = keys[1] else {
+            let pathogen::KeyPathElement::Field { key: field_name } = keys[1] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_variant_with_field::<
+                    pathogen::KeyPathError::must_mutate_enum_variant_with_field::<
                         BasicEnum,
                     >(variant),
                 );
@@ -338,7 +338,7 @@ fn enum_with_no_data() {
             match self {
                 _ => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             BasicEnum,
                         >(variant, field_name),
                     )
@@ -368,33 +368,33 @@ fn enum_with_all_trimmings() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for ExhaustingEnum {
+    impl pathogen::KeyPathMutable for ExhaustingEnum {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<
+                            pathogen::KeyPathError::from_deserialization_error::<
                                 ExhaustingEnum,
                             >,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<ExhaustingEnum>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<ExhaustingEnum>())
                 };
             }
-            let key_path::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
+            let pathogen::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_with_variant::<ExhaustingEnum>(),
+                    pathogen::KeyPathError::must_mutate_enum_with_variant::<ExhaustingEnum>(),
                 );
             };
-            let key_path::KeyPathElement::Field { key: field_name } = keys[1] else {
+            let pathogen::KeyPathElement::Field { key: field_name } = keys[1] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_variant_with_field::<
+                    pathogen::KeyPathError::must_mutate_enum_variant_with_field::<
                         ExhaustingEnum,
                     >(variant),
                 );
@@ -405,7 +405,7 @@ fn enum_with_all_trimmings() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("First", field_name),
                             )
@@ -417,7 +417,7 @@ fn enum_with_all_trimmings() {
                         "field" => field.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Second", field_name),
                             )
@@ -430,7 +430,7 @@ fn enum_with_all_trimmings() {
                         "1" => value1.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Third", field_name),
                             )
@@ -443,7 +443,7 @@ fn enum_with_all_trimmings() {
                         "field2" => field2.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Fourth", field_name),
                             )
@@ -455,7 +455,7 @@ fn enum_with_all_trimmings() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Fifth", field_name),
                             )
@@ -467,7 +467,7 @@ fn enum_with_all_trimmings() {
                         "field" => field.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Sixth", field_name),
                             )
@@ -476,7 +476,7 @@ fn enum_with_all_trimmings() {
                 }
                 _ => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             ExhaustingEnum,
                         >(variant, field_name),
                     )
@@ -509,33 +509,33 @@ fn enum_with_all_trimmings_and_serde() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for ExhaustingEnum {
+    impl pathogen::KeyPathMutable for ExhaustingEnum {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<
+                            pathogen::KeyPathError::from_deserialization_error::<
                                 ExhaustingEnum,
                             >,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<ExhaustingEnum>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<ExhaustingEnum>())
                 };
             }
-            let key_path::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
+            let pathogen::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_with_variant::<ExhaustingEnum>(),
+                    pathogen::KeyPathError::must_mutate_enum_with_variant::<ExhaustingEnum>(),
                 );
             };
-            let key_path::KeyPathElement::Field { key: field_name } = keys[1] else {
+            let pathogen::KeyPathElement::Field { key: field_name } = keys[1] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_variant_with_field::<
+                    pathogen::KeyPathError::must_mutate_enum_variant_with_field::<
                         ExhaustingEnum,
                     >(variant),
                 );
@@ -546,7 +546,7 @@ fn enum_with_all_trimmings_and_serde() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("firstThing", field_name),
                             )
@@ -558,7 +558,7 @@ fn enum_with_all_trimmings_and_serde() {
                         "longField" => long_field.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("secondThing", field_name),
                             )
@@ -571,7 +571,7 @@ fn enum_with_all_trimmings_and_serde() {
                         "1" => value1.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("thirdOption", field_name),
                             )
@@ -587,7 +587,7 @@ fn enum_with_all_trimmings_and_serde() {
                         "longer_field" => even_longer_field.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("fourthKind", field_name),
                             )
@@ -599,7 +599,7 @@ fn enum_with_all_trimmings_and_serde() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("fifthCleverThing", field_name),
                             )
@@ -611,7 +611,7 @@ fn enum_with_all_trimmings_and_serde() {
                         "field" => field.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("sixth", field_name),
                             )
@@ -620,7 +620,7 @@ fn enum_with_all_trimmings_and_serde() {
                 }
                 _ => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             ExhaustingEnum,
                         >(variant, field_name),
                     )
@@ -648,32 +648,32 @@ fn struct_with_a_skip() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyStruct {
+    impl pathogen::KeyPathMutable for MyStruct {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyStruct>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyStruct>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyStruct>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyStruct>())
                 };
             }
-            let key_path::KeyPathElement::Field { key } = keys[0] else {
+            let pathogen::KeyPathElement::Field { key } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
+                    pathogen::KeyPathError::must_mutate_struct_with_field::<MyStruct>(),
                 );
             };
             match key {
                 "long_field" => self.long_field.patch_keypath(&keys[1..], patch),
                 "and_one_more" => self.and_one_more.patch_keypath(&keys[1..], patch),
-                _ => Err(key_path::KeyPathError::unknown_field::<MyStruct>(key)),
+                _ => Err(pathogen::KeyPathError::unknown_field::<MyStruct>(key)),
             }
         }
     }
@@ -697,31 +697,31 @@ fn enum_with_a_skip() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyEnum {
+    impl pathogen::KeyPathMutable for MyEnum {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyEnum>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyEnum>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyEnum>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyEnum>())
                 };
             }
-            let key_path::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
+            let pathogen::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
+                    pathogen::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
                 );
             };
-            let key_path::KeyPathElement::Field { key: field_name } = keys[1] else {
+            let pathogen::KeyPathElement::Field { key: field_name } = keys[1] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_variant_with_field::<
+                    pathogen::KeyPathError::must_mutate_enum_variant_with_field::<
                         MyEnum,
                     >(variant),
                 );
@@ -732,7 +732,7 @@ fn enum_with_a_skip() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Third", field_name),
                             )
@@ -741,7 +741,7 @@ fn enum_with_a_skip() {
                 }
                 _ => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             MyEnum,
                         >(variant, field_name),
                     )
@@ -769,31 +769,31 @@ fn enum_with_skip_all() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyEnum {
+    impl pathogen::KeyPathMutable for MyEnum {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyEnum>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyEnum>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyEnum>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyEnum>())
                 };
             }
-            let key_path::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
+            let pathogen::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
+                    pathogen::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
                 );
             };
-            let key_path::KeyPathElement::Field { key: field_name } = keys[1] else {
+            let pathogen::KeyPathElement::Field { key: field_name } = keys[1] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_variant_with_field::<
+                    pathogen::KeyPathError::must_mutate_enum_variant_with_field::<
                         MyEnum,
                     >(variant),
                 );
@@ -801,7 +801,7 @@ fn enum_with_skip_all() {
             match self {
                 Self::Second(_) if variant == "Second" => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             Self,
                         >("Second", field_name),
                     )
@@ -811,7 +811,7 @@ fn enum_with_skip_all() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Third", field_name),
                             )
@@ -820,7 +820,7 @@ fn enum_with_skip_all() {
                 }
                 _ => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             MyEnum,
                         >(variant, field_name),
                     )
@@ -848,37 +848,37 @@ fn enum_with_a_top_level_skip_all() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyEnum {
+    impl pathogen::KeyPathMutable for MyEnum {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyEnum>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyEnum>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyEnum>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyEnum>())
                 };
             }
-            let key_path::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
+            let pathogen::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
+                    pathogen::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
                 );
             };
-            let key_path::KeyPathElement::Field { key: field_name } = keys[1] else {
+            let pathogen::KeyPathElement::Field { key: field_name } = keys[1] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_variant_with_field::<
+                    pathogen::KeyPathError::must_mutate_enum_variant_with_field::<
                         MyEnum,
                     >(variant),
                 );
             };
             Err(
-                key_path::KeyPathError::unknown_variant_or_field::<
+                pathogen::KeyPathError::unknown_variant_or_field::<
                     MyEnum,
                 >(variant, field_name),
             )
@@ -903,31 +903,31 @@ fn enum_with_a_skip_in_a_struct_variant() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyEnum {
+    impl pathogen::KeyPathMutable for MyEnum {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyEnum>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyEnum>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyEnum>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyEnum>())
                 };
             }
-            let key_path::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
+            let pathogen::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
+                    pathogen::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
                 );
             };
-            let key_path::KeyPathElement::Field { key: field_name } = keys[1] else {
+            let pathogen::KeyPathElement::Field { key: field_name } = keys[1] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_variant_with_field::<
+                    pathogen::KeyPathError::must_mutate_enum_variant_with_field::<
                         MyEnum,
                     >(variant),
                 );
@@ -938,7 +938,7 @@ fn enum_with_a_skip_in_a_struct_variant() {
                         "a" => a.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Second", field_name),
                             )
@@ -950,7 +950,7 @@ fn enum_with_a_skip_in_a_struct_variant() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Third", field_name),
                             )
@@ -959,7 +959,7 @@ fn enum_with_a_skip_in_a_struct_variant() {
                 }
                 _ => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             MyEnum,
                         >(variant, field_name),
                     )
@@ -986,31 +986,31 @@ fn enum_with_a_skip_in_a_tuple_variant() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyEnum {
+    impl pathogen::KeyPathMutable for MyEnum {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyEnum>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyEnum>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyEnum>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyEnum>())
                 };
             }
-            let key_path::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
+            let pathogen::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
+                    pathogen::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
                 );
             };
-            let key_path::KeyPathElement::Field { key: field_name } = keys[1] else {
+            let pathogen::KeyPathElement::Field { key: field_name } = keys[1] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_variant_with_field::<
+                    pathogen::KeyPathError::must_mutate_enum_variant_with_field::<
                         MyEnum,
                     >(variant),
                 );
@@ -1021,7 +1021,7 @@ fn enum_with_a_skip_in_a_tuple_variant() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Second", field_name),
                             )
@@ -1033,7 +1033,7 @@ fn enum_with_a_skip_in_a_tuple_variant() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Third", field_name),
                             )
@@ -1042,7 +1042,7 @@ fn enum_with_a_skip_in_a_tuple_variant() {
                 }
                 _ => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             MyEnum,
                         >(variant, field_name),
                     )
@@ -1069,31 +1069,31 @@ fn enum_with_all_items_skipped_in_a_tuple_variant() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyEnum {
+    impl pathogen::KeyPathMutable for MyEnum {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyEnum>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyEnum>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyEnum>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyEnum>())
                 };
             }
-            let key_path::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
+            let pathogen::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
+                    pathogen::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
                 );
             };
-            let key_path::KeyPathElement::Field { key: field_name } = keys[1] else {
+            let pathogen::KeyPathElement::Field { key: field_name } = keys[1] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_variant_with_field::<
+                    pathogen::KeyPathError::must_mutate_enum_variant_with_field::<
                         MyEnum,
                     >(variant),
                 );
@@ -1101,7 +1101,7 @@ fn enum_with_all_items_skipped_in_a_tuple_variant() {
             match self {
                 Self::Second(_, _) if variant == "Second" => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             Self,
                         >("Second", field_name),
                     )
@@ -1111,7 +1111,7 @@ fn enum_with_all_items_skipped_in_a_tuple_variant() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Third", field_name),
                             )
@@ -1120,7 +1120,7 @@ fn enum_with_all_items_skipped_in_a_tuple_variant() {
                 }
                 _ => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             MyEnum,
                         >(variant, field_name),
                     )
@@ -1147,31 +1147,31 @@ fn enum_with_all_fields_skipped_in_a_struct_variant() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyEnum {
+    impl pathogen::KeyPathMutable for MyEnum {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyEnum>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyEnum>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyEnum>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyEnum>())
                 };
             }
-            let key_path::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
+            let pathogen::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
+                    pathogen::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
                 );
             };
-            let key_path::KeyPathElement::Field { key: field_name } = keys[1] else {
+            let pathogen::KeyPathElement::Field { key: field_name } = keys[1] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_variant_with_field::<
+                    pathogen::KeyPathError::must_mutate_enum_variant_with_field::<
                         MyEnum,
                     >(variant),
                 );
@@ -1179,7 +1179,7 @@ fn enum_with_all_fields_skipped_in_a_struct_variant() {
             match self {
                 Self::Second { .. } if variant == "Second" => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             Self,
                         >("Second", field_name),
                     )
@@ -1189,7 +1189,7 @@ fn enum_with_all_fields_skipped_in_a_struct_variant() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Third", field_name),
                             )
@@ -1198,7 +1198,7 @@ fn enum_with_all_fields_skipped_in_a_struct_variant() {
                 }
                 _ => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             MyEnum,
                         >(variant, field_name),
                     )
@@ -1226,31 +1226,31 @@ fn enum_with_skipped_all_on_a_struct_variant() {
     let actual = quote!(#input);
 
     insta::assert_snapshot!(pretty_print(&actual), @r###"
-    impl key_path::KeyPathMutable for MyEnum {
+    impl pathogen::KeyPathMutable for MyEnum {
         fn patch_keypath(
             &mut self,
-            keys: &[key_path::KeyPathElement],
-            patch: key_path::Patch,
-        ) -> Result<(), key_path::KeyPathError> {
+            keys: &[pathogen::KeyPathElement],
+            patch: pathogen::Patch,
+        ) -> Result<(), pathogen::KeyPathError> {
             if keys.is_empty() {
-                return if let key_path::Patch::Update { value, .. } = patch {
+                return if let pathogen::Patch::Update { value, .. } = patch {
                     *self = serde_json::from_value(value)
                         .map_err(
-                            key_path::KeyPathError::from_deserialization_error::<MyEnum>,
+                            pathogen::KeyPathError::from_deserialization_error::<MyEnum>,
                         )?;
                     Ok(())
                 } else {
-                    Err(key_path::KeyPathError::cannot_splice_type::<MyEnum>())
+                    Err(pathogen::KeyPathError::cannot_splice_type::<MyEnum>())
                 };
             }
-            let key_path::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
+            let pathogen::KeyPathElement::Variant { key: variant, .. } = keys[0] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
+                    pathogen::KeyPathError::must_mutate_enum_with_variant::<MyEnum>(),
                 );
             };
-            let key_path::KeyPathElement::Field { key: field_name } = keys[1] else {
+            let pathogen::KeyPathElement::Field { key: field_name } = keys[1] else {
                 return Err(
-                    key_path::KeyPathError::must_mutate_enum_variant_with_field::<
+                    pathogen::KeyPathError::must_mutate_enum_variant_with_field::<
                         MyEnum,
                     >(variant),
                 );
@@ -1258,7 +1258,7 @@ fn enum_with_skipped_all_on_a_struct_variant() {
             match self {
                 Self::Second { .. } if variant == "Second" => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             Self,
                         >("Second", field_name),
                     )
@@ -1268,7 +1268,7 @@ fn enum_with_skipped_all_on_a_struct_variant() {
                         "0" => value0.patch_keypath(&keys[2..], patch),
                         _ => {
                             Err(
-                                key_path::KeyPathError::unknown_variant_or_field::<
+                                pathogen::KeyPathError::unknown_variant_or_field::<
                                     Self,
                                 >("Third", field_name),
                             )
@@ -1277,7 +1277,7 @@ fn enum_with_skipped_all_on_a_struct_variant() {
                 }
                 _ => {
                     Err(
-                        key_path::KeyPathError::unknown_variant_or_field::<
+                        pathogen::KeyPathError::unknown_variant_or_field::<
                             MyEnum,
                         >(variant, field_name),
                     )
