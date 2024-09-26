@@ -1,5 +1,5 @@
 [workspace]
-members = ["pathogen", "pathogen_macros"]
+members = ["pathogen", "pathogen_macros", "tests"]
 resolver = "2"
 
 [workspace.package]
