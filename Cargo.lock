@@ -187,32 +187,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "key_path"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "key_path_macros",
- "pretty_assertions",
- "serde",
- "serde_json",
- "thiserror",
- "uuid",
-]
-
-[[package]]
-name = "key_path_macros"
-version = "0.1.0"
-dependencies = [
- "darling",
- "insta",
- "prettyplease",
- "proc-macro-error",
- "proc-macro2",
- "quote",
- "syn 2.0.77",
-]
-
-[[package]]
 name = "lazy_static"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -256,6 +230,32 @@ name = "once_cell"
 version = "1.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
+
+[[package]]
+name = "pathogen"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "pathogen_macros",
+ "pretty_assertions",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "uuid",
+]
+
+[[package]]
+name = "pathogen_macros"
+version = "0.1.0"
+dependencies = [
+ "darling",
+ "insta",
+ "prettyplease",
+ "proc-macro-error",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.77",
+]
 
 [[package]]
 name = "pretty_assertions"

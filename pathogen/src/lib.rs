@@ -5,7 +5,7 @@ mod keypath_macro;
 mod navigable;
 
 pub mod macros {
-    pub use key_path_macros::{KeyPathMutable, Navigable};
+    pub use pathogen_macros::{KeyPathMutable, Navigable};
 }
 
 use serde::{de::DeserializeOwned, Deserialize, Serialize};

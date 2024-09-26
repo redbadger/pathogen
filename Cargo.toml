@@ -1,8 +1,8 @@
 [workspace]
-members = ["key_path", "key_path_macros"]
+members = ["pathogen", "pathogen_macros"]
 resolver = "2"
 
 [workspace.package]
-authors = ["Red Badger Consultin Limited"]
+authors = ["Red Badger Consulting Limited"]
 edition = "2021"
 rust-version = "1.66.0"

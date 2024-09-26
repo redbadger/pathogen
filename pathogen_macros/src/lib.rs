@@ -25,7 +25,7 @@ pub fn keypath_mutable(input: TokenStream) -> TokenStream {
 }
 
 fn crate_name() -> proc_macro2::TokenStream {
-    let in_self = env::var("CARGO_PKG_NAME").unwrap() == "key_path";
+    let in_self = env::var("CARGO_PKG_NAME").unwrap() == "pathogen";
     if in_self {
         quote! { crate }
     } else {

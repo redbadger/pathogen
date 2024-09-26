@@ -1,5 +1,5 @@
 [package]
-name = "key_path_macros"
+name = "pathogen_macros"
 version = "0.1.0"
 edition.workspace = true
 
