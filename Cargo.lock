@@ -236,7 +236,7 @@ name = "pathogen"
 version = "0.1.0"
 dependencies = [
  "chrono",
- "pathogen_macros",
+ "pathogen_macros 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "pretty_assertions",
  "serde",
  "serde_json",
@@ -251,6 +251,19 @@ dependencies = [
  "darling",
  "insta",
  "prettyplease",
+ "proc-macro-error",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.77",
+]
+
+[[package]]
+name = "pathogen_macros"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bb0ba1fdf83a20aa3eddd7702362df90dc5d27f647b230c1de8ad288bc73ad52"
+dependencies = [
+ "darling",
  "proc-macro-error",
  "proc-macro2",
  "quote",
