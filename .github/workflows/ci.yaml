@@ -1,0 +1,18 @@
+on: [push, pull_request]
+
+name: CI
+
+jobs:
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@1.66.0
+
+      - name: Test
+        run: cargo test --workspace
