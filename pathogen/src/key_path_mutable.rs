@@ -19,6 +19,8 @@ pub enum KeyPathError {
     CannotMutatePrimitiveChildren { type_name: &'static str },
     #[error("attempt to splice type {type_name}")]
     CannotSpliceType { type_name: &'static str },
+    #[error("attempt to delete type {type_name}")]
+    CannotDeleteType { type_name: &'static str },
     #[error("error deserializing type {type_name}: {error}")]
     DeserializationError {
         type_name: &'static str,
@@ -134,7 +136,7 @@ where
 impl<T: KeyPathMutable + DeserializeOwned> KeyPathMutable for Vec<T> {
     fn patch_keypath(&mut self, keys: &[KeyPathElement], patch: Patch) -> Result<(), KeyPathError> {
         if keys.is_empty() {
-            match patch {
+            return match patch {
                 Patch::Splice {
                     value,
                     start,
@@ -148,15 +150,17 @@ impl<T: KeyPathMutable + DeserializeOwned> KeyPathMutable for Vec<T> {
                         .map_err(KeyPathError::from_deserialization_error::<T>)?;
 
                     self.splice(start..(start + replace), replacements);
+                    Ok(())
                 }
                 Patch::Update { value, .. } => {
                     let replacement: Vec<T> = serde_json::from_value(value)
                         .map_err(KeyPathError::from_deserialization_error::<T>)?;
 
                     self.splice(.., replacement);
+                    Ok(())
                 }
+                Patch::Delete { .. } => Err(KeyPathError::CannotDeleteType { type_name: "Vec" }),
             };
-            return Ok(());
         }
 
         let KeyPathElement::Index { key } = keys[0] else {
@@ -183,6 +187,9 @@ where
                         .map_err(KeyPathError::from_deserialization_error::<Self>)?;
                     Ok(())
                 }
+                Patch::Delete { .. } => Err(KeyPathError::CannotDeleteType {
+                    type_name: "BTreeMap",
+                }),
                 Patch::Splice { .. } => Err(KeyPathError::CannotSpliceType {
                     type_name: "BTreeMap",
                 }),
@@ -202,6 +209,10 @@ where
                 let value = serde_json::from_value(value)
                     .map_err(KeyPathError::from_deserialization_error::<V>)?;
                 self.insert(key, value);
+                return Ok(());
+            }
+            if let Patch::Delete { .. } = patch {
+                self.remove(&key);
                 return Ok(());
             }
         }
@@ -300,6 +311,44 @@ mod tests {
         data.apply_change(&change);
 
         assert_eq!(data, vec![1, 5, 6, 2, 3]);
+    }
+
+    #[test]
+    fn updates_a_map_element() {
+        let mut data = BTreeMap::from([
+            ("key1".to_owned(), 1),
+            ("key2".to_owned(), 2),
+            ("key3".to_owned(), 3),
+        ]);
+        let change = Change::update(keypath![BTreeMap<String, usize>: ["key2".to_owned()]], 20);
+
+        data.apply_change(&change);
+
+        assert_eq!(
+            data,
+            BTreeMap::from([
+                ("key1".to_owned(), 1),
+                ("key2".to_owned(), 20),
+                ("key3".to_owned(), 3),
+            ])
+        );
+    }
+
+    #[test]
+    fn deletes_a_map_element() {
+        let mut data = BTreeMap::from([
+            ("key1".to_owned(), 1),
+            ("key2".to_owned(), 2),
+            ("key3".to_owned(), 3),
+        ]);
+        let change = Change::delete(keypath![BTreeMap<String, usize>: ["key2".to_owned()]]);
+
+        data.apply_change(&change);
+
+        assert_eq!(
+            data,
+            BTreeMap::from([("key1".to_owned(), 1), ("key3".to_owned(), 3),])
+        );
     }
 
     #[derive(PartialEq, Debug, Clone, Serialize, Deserialize, Navigable)]
