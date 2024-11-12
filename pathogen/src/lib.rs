@@ -40,6 +40,11 @@ pub enum Patch {
         /// the new value
         value: serde_json::Value,
     },
+    #[serde(rename_all = "camelCase")]
+    Delete {
+        /// the keypath to the value to delete
+        key_path: serde_json::Value,
+    },
 }
 
 /// Represents a change to the state in the core
@@ -62,6 +67,10 @@ pub enum Change<Root, T: Serialize> {
         /// the new value
         value: T,
     },
+    Delete {
+        /// the keypath to the value to delete
+        key_path: KeyPath<Root, T>,
+    },
 }
 
 impl<Root, T> Change<Root, T>
@@ -71,6 +80,10 @@ where
 {
     pub fn update(key_path: KeyPath<Root, T>, value: T) -> ChangeOf<Root> {
         Change::Update { key_path, value }.into()
+    }
+
+    pub fn delete(key_path: KeyPath<Root, T>) -> ChangeOf<Root> {
+        Change::Delete { key_path }.into()
     }
 
     pub fn splice(
@@ -96,6 +109,10 @@ impl<Root, T: Serialize + 'static> AsPatch for Change<Root, T> {
                 key_path: serde_json::to_value(key_path.path.clone())
                     .expect("Failed to serialize keypath"),
                 value: serde_json::to_value(value).expect("Failed to serialize value"),
+            },
+            Change::Delete { key_path } => Patch::Delete {
+                key_path: serde_json::to_value(key_path.path.clone())
+                    .expect("Failed to serialize keypath"),
             },
             Change::Splice {
                 key_path,
@@ -140,6 +157,9 @@ pub enum ChangeOf<Root> {
         key_path: KeyPathFrom<Root>,
         value: serde_json::Value,
     },
+    Delete {
+        key_path: KeyPathFrom<Root>,
+    },
 }
 
 impl<Root: 'static> ChangeOf<Root> {
@@ -148,6 +168,9 @@ impl<Root: 'static> ChangeOf<Root> {
             ChangeOf::Update { key_path, value } => ChangeOf::Update {
                 key_path: key_path.prepending(base),
                 value: value.clone(),
+            },
+            ChangeOf::Delete { key_path } => ChangeOf::Delete {
+                key_path: key_path.prepending(base),
             },
             ChangeOf::Splice {
                 key_path,
@@ -170,6 +193,11 @@ impl<Root: 'static> ChangeOf<Root> {
                 let key_path = key_path.downcast();
 
                 Some(Change::Update { key_path, value })
+            }
+            ChangeOf::Delete { key_path } => {
+                let key_path = key_path.downcast();
+
+                Some(Change::Delete { key_path })
             }
             ChangeOf::Splice {
                 key_path,
@@ -196,6 +224,7 @@ impl<Root: 'static> ChangeOf<Root> {
     pub fn key_path(&self) -> &KeyPathFrom<Root> {
         match self {
             ChangeOf::Update { key_path, .. } => key_path,
+            ChangeOf::Delete { key_path, .. } => key_path,
             ChangeOf::Splice { key_path, .. } => key_path,
         }
     }
@@ -208,6 +237,10 @@ impl<Root> AsPatch for ChangeOf<Root> {
                 key_path: serde_json::to_value(key_path.path.clone())
                     .expect("Failed to serialize keypath"),
                 value: value.clone(),
+            },
+            ChangeOf::Delete { key_path } => Patch::Delete {
+                key_path: serde_json::to_value(key_path.path.clone())
+                    .expect("Failed to serialize keypath"),
             },
             ChangeOf::Splice {
                 key_path,
@@ -231,6 +264,9 @@ impl<Root, T: Serialize> From<Change<Root, T>> for ChangeOf<Root> {
             Change::Update { key_path, value } => ChangeOf::Update {
                 key_path: key_path.into(),
                 value: serde_json::to_value(value).expect("Failed to serialize value"),
+            },
+            Change::Delete { key_path } => ChangeOf::Delete {
+                key_path: key_path.into(),
             },
             Change::Splice {
                 key_path,
